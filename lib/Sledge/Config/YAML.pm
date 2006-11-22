@@ -4,28 +4,62 @@ use strict;
 use warnings;
 use base qw(Sledge::Config);
 
-our $VERSION = 0.01;
+use Data::Visitor::Callback;
 
-use YAML;
+our $VERSION = 0.03;
 
 sub new {
     my $class       = shift;
     my $config_name = shift;
     my $config_file = shift;
 
-    my($config_base,) = split /_/, $config_name;
+    my $config_base;
+    if ($config_name =~ /^([^_]+)_/) {
+        $config_base = $1;
+    }
 
-    my $conf   = YAML::LoadFile($config_file);
-    my %config = (
-        %{$conf->{common}},
-        %{$conf->{$config_base}},
-        %{$conf->{$config_name}},
-    );
+    my $conf = $class->_load($config_file);
+
+    my %config;
+    if ($config_base) {
+        %config = (
+            %{$conf->{common}},
+            %{$conf->{$config_base}},
+            %{$conf->{$config_name}},
+        );
+    } else {
+        %config = (
+            %{$conf->{common}},
+            %{$conf->{$config_name}},
+        );
+    }
 
     # case sensitive hash
     %config = map { lc($_) => $config{$_} } keys %config
         unless $class->case_sensitive;
+
+    # replace string __ENV:HOME__
+    my $v = Data::Visitor::Callback->new(
+        plain_value => sub {
+            return unless defined $_;
+            s{__ENV:HOME__}{ $ENV{HOME} }e;
+        }
+    );
+    $v->visit( \%config );
+
     bless \%config, $class;
+}
+
+sub _load {
+    my ($self, $config_file) = @_;
+
+    eval { require YAML::Syck; };
+    if( $@ ) {
+        require YAML;
+        return YAML::LoadFile( $config_file );
+    } else {
+        return YAML::Syck::LoadFile( $config_file );
+    }
 }
 
 1;
@@ -67,9 +101,9 @@ Sledge::Config::YAML - The configuration file of Sledge can be written by using 
        - 127.0.0.1:XXXXX
      cache_servers  :
        - 127.0.0.1:XXXXX
+     tmpl_path: __ENV:HOME__/project/template/proj
 
    develop_kan:
-     tmpl_path: /path/to/template/proj
      host: proj.dev.example.com
      validator_message_file: /path/to/dev_conf/message.yaml
      info_addr: kan@example.com
@@ -78,6 +112,12 @@ Sledge::Config::YAML - The configuration file of Sledge can be written by using 
 =head1 DESCRIPTION
 
 The configuration file of Sledge can be written by using YAML.
+
+=head1 METHODS
+
+=head2 new
+
+You can use syntax `__ENV:HOME__`. It's replaced with your home directory.
 
 =head1 AUTHOR
 
@@ -95,3 +135,4 @@ it under the same terms as Perl itself.
 L<Sledge::Config>
 
 =cut
+

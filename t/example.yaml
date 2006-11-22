@@ -15,16 +15,17 @@ develop:
     - dev_pass
   session_servers:
     - 127.0.0.1:XXXXX
+    - 127.0.0.2:XXXXX
   cache_servers  :
     - 127.0.0.1:XXXXX
 
 develop_user:
-  tmpl_path: /path/to/template/proj
+  tmpl_path: __ENV:HOME__/template/proj
   host: proj.dev.example.com
-  validator_message_file: /path/to/dev_conf/message.yaml
+  validator_message_file: __ENV:HOME__/conf/message.yaml
   info_addr: kan@example.com
 
-_product:
+product:
   datasource:
     - dbi:mysql:proj
     - proj
@@ -37,3 +38,4 @@ _product:
   host: proj.example.com
   validator_message_file: /path/to/conf/message.yaml
   info_addr: info@proj.example.com
+
