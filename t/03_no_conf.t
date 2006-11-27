@@ -9,7 +9,7 @@ my $yaml   = YAML::LoadFile('t/example.yaml');
 
 sub config {
     my $method = $_[0];
-    my @val = Sledge::Config::YAML->new('develop_user', 't/example.yaml')->$method;
+    my @val = Sledge::Config::YAML->new('develop_foo', 't/example.yaml')->$method;
     return scalar(@val) > 1 ? \@val : $val[0];
 }
 

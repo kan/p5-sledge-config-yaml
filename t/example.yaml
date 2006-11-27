@@ -18,12 +18,13 @@ develop:
     - 127.0.0.2:XXXXX
   cache_servers  :
     - 127.0.0.1:XXXXX
+  host: proj.__ENV:USER__.dev.example.com
+  info_addr: __ENV:USER__@example.com
+  tmpl_path: __ENV:HOME__/template/proj
+  validator_message_file: __ENV:HOME__/conf/message.yaml
 
 develop_user:
-  tmpl_path: __ENV:HOME__/template/proj
-  host: proj.dev.example.com
-  validator_message_file: __ENV:HOME__/conf/message.yaml
-  info_addr: kan@example.com
+  org_param: foo
 
 product:
   datasource:

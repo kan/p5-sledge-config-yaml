@@ -6,7 +6,7 @@ use base qw(Sledge::Config);
 
 use Data::Visitor::Callback;
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 sub new {
     my $class       = shift;
@@ -25,12 +25,12 @@ sub new {
         %config = (
             %{$conf->{common}},
             %{$conf->{$config_base}},
-            %{$conf->{$config_name}},
+            $conf->{$config_name} ? %{$conf->{$config_name}} : (),
         );
     } else {
         %config = (
             %{$conf->{common}},
-            %{$conf->{$config_name}},
+            $conf->{$config_name} ? %{$conf->{$config_name}} : (),
         );
     }
 
@@ -38,11 +38,11 @@ sub new {
     %config = map { lc($_) => $config{$_} } keys %config
         unless $class->case_sensitive;
 
-    # replace string __ENV:HOME__
+    # replace string __ENV:(.+)__
     my $v = Data::Visitor::Callback->new(
         plain_value => sub {
             return unless defined $_;
-            s{__ENV:HOME__}{ $ENV{HOME} }e;
+            s{__ENV:(.+)__}{ $ENV{$1} }e;
         }
     );
     $v->visit( \%config );
@@ -117,7 +117,7 @@ The configuration file of Sledge can be written by using YAML.
 
 =head2 new
 
-You can use syntax `__ENV:HOME__`. It's replaced with your home directory.
+You can use syntax `__ENV:(.+)__`. It's replaced with environment variable.
 
 =head1 AUTHOR
 

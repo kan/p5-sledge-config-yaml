@@ -18,7 +18,7 @@ sub yaml_use_home {
     my $v = Data::Visitor::Callback->new(
         plain_value => sub {
             return unless defined $_;
-            s{__ENV:HOME__}{ $ENV{HOME} }e;
+            s{__ENV:(.+)__}{ $ENV{$1} }e;
         }
     );
     $v->visit( $val );
