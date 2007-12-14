@@ -1,9 +1,15 @@
-use ExtUtils::MakeMaker;
-WriteMakefile(
-        'NAME'         => 'Sledge::Config::YAML',
-        'VERSION_FROM' => 'lib/Sledge/Config/YAML.pm', # finds $VERSION
-        'PREREQ_PM'    => {
-                Test::More => 0.32,
-                YAML       => 0.39,
-        },
-);
+use strict;
+use warnings;
+use inc::Module::Install;
+
+name("Sledge-Config-YAML");
+all_from("lib/Sledge/Config/YAML.pm");
+
+requires('YAML' => 0.39);
+build_requires('Test::More' => 0.32);
+
+use_test_base;
+auto_include;
+auto_install;
+
+WriteAll;
