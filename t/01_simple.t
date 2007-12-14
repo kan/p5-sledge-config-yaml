@@ -43,6 +43,7 @@ tmpl_path: /home/kan/template/proj
 validator_message_file: /home/kan/conf/message.yaml
 
 org_param: foo
+log: /home/kan/foo/kan.conf
 
 ===
 --- input: develop_foo

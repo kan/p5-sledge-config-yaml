@@ -25,6 +25,7 @@ develop:
 
 develop_user:
   org_param: foo
+  log: __ENV:HOME__/foo/__ENV:USER__.conf
 
 product:
   datasource:
