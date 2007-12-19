@@ -6,7 +6,7 @@ use base qw(Sledge::Config);
 
 use Data::Visitor::Callback;
 
-our $VERSION = 0.04;
+our $VERSION = 0.06;
 
 sub new {
     my $class       = shift;

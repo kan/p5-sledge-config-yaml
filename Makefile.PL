@@ -6,6 +6,7 @@ name("Sledge-Config-YAML");
 all_from("lib/Sledge/Config/YAML.pm");
 
 requires('YAML' => 0.39);
+requires('Data::Visitor::Callback');
 build_requires('Test::More' => 0.32);
 
 use_test_base;
