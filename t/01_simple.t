@@ -2,6 +2,11 @@ use strict;
 use warnings;
 use Test::Base;
 use Sledge::Config::YAML;
+BEGIN {
+    eval q[use Sledge::Config;];
+    plan skip_all => "Sledge::Config required for testing base" if $@;
+};
+
 
 plan tests => 1*blocks;
 
