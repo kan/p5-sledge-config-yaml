@@ -4,9 +4,10 @@ use strict;
 use warnings;
 use base qw(Sledge::Config);
 
-use Data::Visitor::Callback;
+our $VERSION = 0.08;
 
-our $VERSION = 0.07;
+use YAML::Syck;
+use File::Slurp;
 
 sub new {
     my $class       = shift;
@@ -18,7 +19,9 @@ sub new {
         $config_base = $1;
     }
 
-    my $conf = $class->_load($config_file);
+    my $config_data = read_file($config_file);
+    $config_data =~ s{__ENV:(.+?)__}{ $ENV{$1} }ge;
+    my $conf = $class->_load($config_data);
 
     my %config;
     if ($config_base) {
@@ -38,28 +41,13 @@ sub new {
     %config = map { lc($_) => $config{$_} } keys %config
         unless $class->case_sensitive;
 
-    # replace string __ENV:(.+)__
-    my $v = Data::Visitor::Callback->new(
-        plain_value => sub {
-            return unless defined $_;
-            s{__ENV:(.+?)__}{ $ENV{$1} }ge;
-        }
-    );
-    $v->visit( \%config );
-
     bless \%config, $class;
 }
 
 sub _load {
-    my ($self, $config_file) = @_;
+    my ($self, $config_data) = @_;
 
-    eval { require YAML::Syck; };
-    if( $@ ) {
-        require YAML;
-        return YAML::LoadFile( $config_file );
-    } else {
-        return YAML::Syck::LoadFile( $config_file );
-    }
+    return YAML::Syck::Load( $config_data );
 }
 
 1;
