@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base qw(Sledge::Config);
 
-our $VERSION = 0.08;
+our $VERSION = '0.08';
 
 use YAML::Syck;
 use File::Slurp;
