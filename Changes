@@ -1,5 +1,8 @@
 Revision history for Perl extension Sledge::Config::YAML
 
+0.09  Wed Mar 10 10:41:49 2010
+        - fixed warnings
+
 0.08  Thu Mar  4 20:59:05 2010
         - remove dependency for Data::Visitor::Callback
         - use YAML::Syck only

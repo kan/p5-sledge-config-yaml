@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base qw(Sledge::Config);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use YAML::Syck;
 use File::Slurp;
@@ -20,7 +20,7 @@ sub new {
     }
 
     my $config_data = read_file($config_file);
-    $config_data =~ s{__ENV:(.+?)__}{ $ENV{$1} }ge;
+    $config_data =~ s{__ENV:(.+?)__}{ $ENV{$1}||'' }ge;
     my $conf = $class->_load($config_data);
 
     my %config;
